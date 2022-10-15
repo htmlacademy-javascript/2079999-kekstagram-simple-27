@@ -1,4 +1,5 @@
-import {createTestPhoto} from './data/js';
+import {createTestPhoto} from './mock/data.js';
+import {renderThumbnails} from './render-content.js';
 
 const TEST_PHOTO_COUNT = 25;
-createTestPhoto(TEST_PHOTO_COUNT);
+renderThumbnails(createTestPhoto(TEST_PHOTO_COUNT));
