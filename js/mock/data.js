@@ -7,13 +7,13 @@ const PHOTO_DISCRIPTION = 'Lorem ipsum dolor sit amet, consectetur adipiscing el
  * @param {number} count — количество объектов, которое нужно сгенерировать
  * @return {Object} — случайное число из диапазона
  */
-function createTestPhoto(count) {
-  const testPhoto = [];
+function createPhoto(count) {
+  const photo = [];
   const id = getUniqRandomNum(...[1, count], count);
   const photoDescriptions = PHOTO_DISCRIPTION.split(' ');
 
   for (let i = 0; i < count; i++) {
-    testPhoto[i] = {
+    photo[i] = {
       id: id[i],
       url: `photos/${id[i]}.jpg`,
       description: photoDescriptions[getRandomNum(0, photoDescriptions.length - 1)],
@@ -21,7 +21,7 @@ function createTestPhoto(count) {
       comments: getRandomNum(0, 200),
     };
   }
-  return testPhoto;
+  return photo;
 }
 
-export {createTestPhoto};
+export {createPhoto};
