@@ -12,6 +12,8 @@ const photoPreview = form.querySelector('.img-upload__preview');
 const scaleControlReduceButton = form.querySelector('.scale__control--smaller');
 const scaleControlAddButton = form.querySelector('.scale__control--bigger');
 const scaleControlInputValue = form.querySelector('.scale__control--value');
+const sliderDepthOfEffect = form.querySelector('.effect-level__slider');
+const sliderDepthOfEffectInput = form.querySelector('.effect-level__value');
 const pristine = new Pristine(form, {
   classTo: 'img-upload__text',
   errorTextParent: 'img-upload__text'
@@ -68,9 +70,21 @@ function openEditorModal() {
   scaleControlReduceButton.addEventListener('click', setReducedScaleValue);
   scaleControlAddButton.addEventListener('click', setAddedScaleValue);
   document.addEventListener('keydown', closeEditorModalIfEscapeKey);
+  photoPreview.classList.add('effects__preview--none');
+  sliderDepthOfEffect.setAttribute('disabled', true);
   editorModal.classList.remove('hidden');
   document.body.classList.add('modal-open');
   setDefaultScaleValue();
+
+  noUiSlider.create(sliderDepthOfEffect, {
+    range: {
+      min: 0,
+      max: 1
+    },
+    start: 1,
+    step: 0.1,
+    connect: 'lower',
+  });
 
   let effectName;
   form.addEventListener('change', (evt) => {
@@ -78,7 +92,35 @@ function openEditorModal() {
       photoPreview.classList.remove(`effects__preview--${effectName}`);
       photoPreview.classList.add(`effects__preview--${evt.target.value}`);
       effectName = evt.target.value;
+
+      if (photoPreview.classList.contains('effects__preview--none')) {
+        sliderDepthOfEffect.setAttribute('disabled', true);
+      } else {
+        sliderDepthOfEffect.removeAttribute('disabled');
+      }
     }
+
+    sliderDepthOfEffect.noUiSlider.on('update', () => {
+      sliderDepthOfEffectInput.value = sliderDepthOfEffect.noUiSlider.get();
+
+      const depthOfEffect = sliderDepthOfEffect.noUiSlider.get();
+
+      if (photoPreview.classList.contains('effects__preview--chrome')) {
+        photoPreview.style.filter = `grayscale(${depthOfEffect})`;
+      }
+      if (photoPreview.classList.contains('effects__preview--sepia')) {
+        photoPreview.style.filter = `sepia(${depthOfEffect})`;
+      }
+      if (photoPreview.classList.contains('effects__preview--marvin')) {
+        photoPreview.style.filter = `invert(${depthOfEffect * 100}%)`;
+      }
+      if (photoPreview.classList.contains('effects__preview--phobos')) {
+        photoPreview.style.filter = `blur(${depthOfEffect}px)`;
+      }
+      if (photoPreview.classList.contains('effects__preview--heat')) {
+        photoPreview.style.filter = `brightness(${depthOfEffect})`;
+      }
+    });
   });
 
   form.addEventListener('submit', (evt) => {
