@@ -1,0 +1,15 @@
+HEAD https://htmlacademy.ru HTTP/1.1
+###
+GET /posts HTTP/1.1
+Host: jsonplaceholder.typicode.com
+###
+POST /posts HTTP/1.1
+Host: jsonplaceholder.typicode.com
+Content-Type: application/json
+Content-Length: 88
+
+{
+    "title": "Новая публикация",
+    "body": "Текст публикации",
+    "userId": 31337
+}
