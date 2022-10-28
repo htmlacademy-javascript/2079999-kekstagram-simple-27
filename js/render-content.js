@@ -2,7 +2,7 @@
  * Отрисовка миниатюр фотографий пользователей
  * @param {Array} thumbnails — массив данных о фотографиях
  */
-function renderThumbnails (thumbnails) {
+function renderThumbnails(thumbnails) {
   const thumbnailFragment = document.createDocumentFragment();
   const container = document.querySelector('.pictures');
 

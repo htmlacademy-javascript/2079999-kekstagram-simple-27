@@ -8,4 +8,4 @@ function isStrLengthCorrect(str, len) {
   return (str.length <= len);
 }
 
-isStrLengthCorrect('', 20);
+export {isStrLengthCorrect};
