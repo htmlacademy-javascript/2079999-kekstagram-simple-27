@@ -1,5 +1,3 @@
-import {closeEditorModal} from './form.js';
-
 const ALERT_SHOW_TIME = 5000;
 
 /**
@@ -21,6 +19,9 @@ function isEscapeKey(evt) {
   return (evt.key === 'Escape');
 }
 
+/**
+ * Функция генерирует всплывающее окно с сообщением об ошибке.
+ */
 function showAlert() {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = '100';
@@ -45,6 +46,9 @@ function showAlert() {
   }, ALERT_SHOW_TIME);
 }
 
+/**
+ * Функция генерирует всплывающее окно с сообщением об успешной отправке формы.
+ */
 function onSuccessSubmit() {
   const successPopup = document.querySelector('#success')
     .content
@@ -66,10 +70,11 @@ function onSuccessSubmit() {
       successPopup.remove();
     }
   }, {once: true});
-
-  closeEditorModal();
 }
 
+/**
+ * Функция генерирует всплывающее окно с сообщением об ошибке при отправке формы.
+ */
 function onFailSubmit() {
   const errorPopup = document.querySelector('#error')
     .content

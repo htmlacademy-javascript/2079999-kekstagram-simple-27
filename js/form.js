@@ -14,10 +14,10 @@ const СommentLength = {
 };
 
 /**
-   * Функция проверяет длину комментария.
-   * @param {String} comment - объект события.
-   * @return {boolean} - истина, если длина комментария укладывается в диапазон.
-   */
+ * Функция проверяет длину комментария.
+ * @param {String} comment - объект события.
+ * @return {boolean} - истина, если длина комментария укладывается в диапазон.
+ */
 function isCommentLengthCorrect (comment) {
   return comment.length >= СommentLength.MIN && comment.length <= СommentLength.MAX;
 }
@@ -26,9 +26,9 @@ function isCommentLengthCorrect (comment) {
  * Функция вызывает закрытие окна редактора загруженного изображения, если произошло нажатие ESC.
  * @param {Object} evt - объект события.
  */
-function handleEscapeKeydown(evt) {
+function escapeKeydownHandler(evt) {
   if (isEscapeKey(evt)) {
-    handleCloseEditorModal();
+    closeEditorModalHandler();
   }
 }
 
@@ -48,7 +48,7 @@ const scaleDownButton = form.querySelector('.scale__control--smaller');
 /**
    * Функция меняет значение масштаба в окне редактора загруженного изображения.
    */
-function handleScaleChange(evt) {
+function scaleChangeHandler(evt) {
   let currentValue = Number((scaleInputValue.value).slice(0, -1));
 
   if ((evt.target === scaleUpButton) && currentValue >= ScaleValue.MIN && currentValue < ScaleValue.MAX) {
@@ -103,11 +103,11 @@ let activeEffectClass = effect.none;
 /**
  * Функция открывает окно редактора загруженного изображения.
  */
-function handleOpenEditorModal() {
+function openEditorModalHandler() {
   editorModal.classList.remove('hidden');
   document.body.classList.add('modal-open');
   sliderDepthOfEffect.setAttribute('disabled', true);
-  document.addEventListener('keydown', handleEscapeKeydown);
+  document.addEventListener('keydown', escapeKeydownHandler);
   scaleReset();
   photoPreview.style.transform = `scale(${ScaleValue.DEFAULT / 100})`;
   photoPreview.classList.remove(`effects__preview--${activeEffectClass}`);
@@ -123,21 +123,37 @@ const closeEditorModalButton = form.querySelector('#upload-cancel');
 /**
  * Функция закрывает окно редактора загруженного изображения.
  */
-function handleCloseEditorModal() {
+function closeEditorModalHandler() {
   editorModal.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', handleEscapeKeydown);
+  document.removeEventListener('keydown', escapeKeydownHandler);
   uploadControl.value = '';
+}
+const submitButton = form.querySelector('#upload-submit');
+/**
+ * Функция блокирует кнопку отправки формы.
+ */
+function blockSubmitButton() {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправка...';
+}
+
+/**
+ * Функция отменяет блокировку кнопки отправки формы.
+ */
+function unblockSubmitButton() {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
 }
 
 /**
  * Функция устанавливает обработчики событий на окно редактора загруженного изображения.
  */
 function addEventListenersToForm(onSuccess, onFail) {
-  uploadControl.addEventListener('change', handleOpenEditorModal);
-  closeEditorModalButton.addEventListener('click', handleCloseEditorModal);
-  scaleDownButton.addEventListener('click', handleScaleChange);
-  scaleUpButton.addEventListener('click', handleScaleChange);
+  uploadControl.addEventListener('change', openEditorModalHandler);
+  closeEditorModalButton.addEventListener('click', closeEditorModalHandler);
+  scaleDownButton.addEventListener('click', scaleChangeHandler);
+  scaleUpButton.addEventListener('click', scaleChangeHandler);
   photoPreview.classList.add('effects__preview--none');
 
   sliderDepthOfEffect.noUiSlider.on('update', () => {
@@ -175,12 +191,12 @@ function addEventListenersToForm(onSuccess, onFail) {
 
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
+    blockSubmitButton();
     if (pristine.validate()) {
-      sendData(onSuccess, onFail, new FormData(evt.target));
-    } else {
-      onFail();
+      sendData(onSuccess, onFail, new FormData(evt.target)).then(() => closeEditorModalHandler());
     }
+    unblockSubmitButton();
   });
 }
 
-export {addEventListenersToForm, handleCloseEditorModal as closeEditorModal};
+export {addEventListenersToForm};
