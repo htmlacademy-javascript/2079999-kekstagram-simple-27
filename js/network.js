@@ -1,22 +1,23 @@
-import {renderThumbnails} from './render-content.js';
-import {showAlert} from './util.js';
-
-function getData() {
+function getData(onSuccess, onFail) {
   fetch('https://27.javascript.pages.academy/kekstagram-simple/data')
     .then((response) => response.json())
-    .then((data) => renderThumbnails(data))
-    .catch(() => showAlert());
+    .then((data) => onSuccess(data))
+    .catch(() => onFail());
 }
 
-function sendData(data) {
+function sendData(onSuccess, onFail, data) {
   fetch('https://27.javascript.pages.academy/kekstagram-simple', {
     method: 'POST',
     body: data,
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    },
-  });
+    'Content-Type': 'multipart/form-data',
+  })
+    .then((response) => {
+      if (response.ok) {
+        onSuccess();
+      } else {
+        onFail();
+      }})
+    .catch(() => (onFail()));
 }
 
 export {getData, sendData};

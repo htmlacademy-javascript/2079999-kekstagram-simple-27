@@ -1,3 +1,7 @@
+import {closeEditorModal} from './form.js';
+
+const ALERT_SHOW_TIME = 5000;
+
 /**
  * Проверка длины строки
  * @param {string} str — исходная строка
@@ -16,8 +20,6 @@ function isStrLengthCorrect(str, len) {
 function isEscapeKey(evt) {
   return (evt.key === 'Escape');
 }
-
-const ALERT_SHOW_TIME = 5000;
 
 function showAlert() {
   const alertContainer = document.createElement('div');
@@ -43,4 +45,52 @@ function showAlert() {
   }, ALERT_SHOW_TIME);
 }
 
-export {isStrLengthCorrect, isEscapeKey, showAlert};
+function onSuccessSubmit() {
+  const successPopup = document.querySelector('#success')
+    .content
+    .querySelector('.success')
+    .cloneNode(true);
+  document.body.appendChild(successPopup);
+
+  const closeButton = successPopup.querySelector('.success__button');
+  closeButton.addEventListener('click', () => {
+    successPopup.remove();
+  }, {once: true});
+  document.addEventListener('keydown', (evt) => {
+    if (isEscapeKey(evt)) {
+      successPopup.remove();
+    }
+  }, {once: true});
+  document.addEventListener('click', (evt) => {
+    if (evt.target.id !== 'success') {
+      successPopup.remove();
+    }
+  }, {once: true});
+
+  closeEditorModal();
+}
+
+function onFailSubmit() {
+  const errorPopup = document.querySelector('#error')
+    .content
+    .querySelector('.error')
+    .cloneNode(true);
+  document.body.appendChild(errorPopup);
+
+  const closeButton = errorPopup.querySelector('.error__button');
+  closeButton.addEventListener('click', () => {
+    errorPopup.remove();
+  }, {once: true});
+  document.addEventListener('keydown', (evt) => {
+    if (isEscapeKey(evt)) {
+      errorPopup.remove();
+    }
+  }, {once: true});
+  document.addEventListener('click', (evt) => {
+    if (evt.target.id !== 'error') {
+      errorPopup.remove();
+    }
+  }, {once: true});
+}
+
+export {isStrLengthCorrect, isEscapeKey, showAlert, onSuccessSubmit, onFailSubmit};
