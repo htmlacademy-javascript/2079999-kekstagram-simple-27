@@ -33,7 +33,8 @@ function escapeKeydownHandler(evt) {
 }
 
 const form = document.querySelector('.img-upload__form');
-const photoPreview = form.querySelector('.img-upload__preview');
+const photoPreviewContainer = form.querySelector('.img-upload__preview');
+const photoPreview = photoPreviewContainer.querySelector('img');
 const scaleInputValue = form.querySelector('.scale__control--value');
 /**
  * Функция устанавливает значение масштаба по умолчанию в окне редактора загруженного изображения.
@@ -110,12 +111,12 @@ function openEditorModalHandler() {
   document.addEventListener('keydown', escapeKeydownHandler);
   scaleReset();
   photoPreview.style.transform = `scale(${ScaleValue.DEFAULT / 100})`;
-  photoPreview.classList.remove(`effects__preview--${activeEffectClass}`);
-  photoPreview.classList.add('effects__preview--none');
+  photoPreviewContainer.classList.remove(`effects__preview--${activeEffectClass}`);
+  photoPreviewContainer.classList.add('effects__preview--none');
   sliderDepthOfEffect.noUiSlider.set(1);
   form.querySelector('#effect-none').checked = true;
   activeEffectClass = effect.none;
-  photoPreview.style.filter = effect.none;
+  photoPreviewContainer.style.filter = effect.none;
   form.querySelector('.text__description').value = '';
 }
 
@@ -154,22 +155,22 @@ function addEventListenersToForm(onSuccess, onFail) {
   closeEditorModalButton.addEventListener('click', closeEditorModalHandler);
   scaleDownButton.addEventListener('click', scaleChangeHandler);
   scaleUpButton.addEventListener('click', scaleChangeHandler);
-  photoPreview.classList.add('effects__preview--none');
+  photoPreviewContainer.classList.add('effects__preview--none');
 
   sliderDepthOfEffect.noUiSlider.on('update', () => {
     effect.depth = sliderDepthOfEffect.noUiSlider.get();
     sliderDepthOfEffectInput.value = effect.depth;
-    photoPreview.style.filter = effect[activeEffectClass];
+    photoPreviewContainer.style.filter = effect[activeEffectClass];
   });
 
   form.addEventListener('change', (evt) => {
     if (evt.target.name === 'effect') {
-      photoPreview.classList.remove(`effects__preview--${activeEffectClass}`);
-      photoPreview.classList.add(`effects__preview--${evt.target.value}`);
+      photoPreviewContainer.classList.remove(`effects__preview--${activeEffectClass}`);
+      photoPreviewContainer.classList.add(`effects__preview--${evt.target.value}`);
       sliderDepthOfEffect.noUiSlider.set(1);
-      photoPreview.style.filter = effect[evt.target.value];
+      photoPreviewContainer.style.filter = effect[evt.target.value];
 
-      if (!photoPreview.classList.contains('effects__preview--none')) {
+      if (!photoPreviewContainer.classList.contains('effects__preview--none')) {
         sliderDepthOfEffect.removeAttribute('disabled');
       } else {
         sliderDepthOfEffect.setAttribute('disabled', true);
@@ -191,11 +192,12 @@ function addEventListenersToForm(onSuccess, onFail) {
 
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    blockSubmitButton();
     if (pristine.validate()) {
-      sendData(onSuccess, onFail, new FormData(evt.target)).then(() => closeEditorModalHandler());
+      blockSubmitButton();
+      sendData(onSuccess, onFail, new FormData(evt.target))
+        .then(() => closeEditorModalHandler())
+        .then(() => unblockSubmitButton());
     }
-    unblockSubmitButton();
   });
 }
 
