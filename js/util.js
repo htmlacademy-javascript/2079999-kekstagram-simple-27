@@ -1,16 +1,6 @@
 const ALERT_SHOW_TIME = 5000;
 
 /**
- * Проверка длины строки
- * @param {string} str — исходная строка
- * @param {number} len — количество симолов для проверки
- * @return {boolean} — истина, если строка в диапазоне
- */
-function isStrLengthCorrect(str, len) {
-  return (str.length <= len);
-}
-
-/**
  * Функция проверяет является ли нажатая клавиша ESC-ом.
  * @param {Object} evt - объект события.
  * @return {boolean} - истина, если нажатая клавиша - ESC.
@@ -98,4 +88,4 @@ function onFailSubmit() {
   }, {once: true});
 }
 
-export {isStrLengthCorrect, isEscapeKey, showAlert, onSuccessSubmit, onFailSubmit};
+export {isEscapeKey, showAlert, onSuccessSubmit, onFailSubmit};

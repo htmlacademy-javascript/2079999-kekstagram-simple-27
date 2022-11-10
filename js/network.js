@@ -1,5 +1,5 @@
-const GET_DATA_URL = 'https://27.javascript.pages.academy/kekstagram-simple/data';
-const POST_SEND_DATA_URL = 'https://27.javascript.pages.academy/kekstagram-simple';
+const API_URL = 'https://27.javascript.pages.academy/kekstagram-simple';
+const GET_DATA_URL = `${API_URL}/data`;
 
 /**
  * Функция отправляет GET-запрос.
@@ -21,7 +21,7 @@ function getData(onSuccess, onFail) {
  * @return {Promise} - объект-промис.
  */
 function sendData(onSuccess, onFail, data) {
-  return fetch(POST_SEND_DATA_URL, {
+  return fetch(API_URL, {
     method: 'POST',
     body: data,
   })
